@@ -2,6 +2,7 @@ module data_mem (
     input   wire    [15:0]  datamem_data,
     input   wire    [15:0]  datamem_addr,
     input   wire            clk, rst, we, re,
+    
     output  wire    [15:0]  datamem_strm
 );
     integer i;
