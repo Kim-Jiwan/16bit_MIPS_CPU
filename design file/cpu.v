@@ -29,8 +29,13 @@ module cpu #(
     wire                        reg_write;
     wire                        sign_or_zero;
 
+    wire    [inst_SIZE-1:0]     extended_imm_val;
+    wire    [inst_SIZE-1:0]     read_data_1;
+    wire    [inst_SIZE-1:0]     read_data_2;
+    wire    [inst_SIZE-1:0]     rt_imm_mux_result;
+
     inst_mem            inst_mem0(      .PC                 (PC),
-                                        .instr              (instr)         );
+                                        .instr              (instr)             );
     
     field_generator     field_gen0(     .instr              (instr),
                                         
@@ -40,7 +45,7 @@ module cpu #(
                                         .rd                 (rd),
                                         .imm_val            (imm_val),
                                         .funct              (funct),
-                                        .address            (address)       );
+                                        .address            (address)           );
 
     ctrl_sig_unit       ctrl_sig0(      .opcode             (opcode),
                                         .rst                (rst),
@@ -53,10 +58,25 @@ module cpu #(
                                         .alu_op             (alu_op),
                                         .mem_write          (mem_write),
                                         .alu_src            (alu_src),
-                                        .reg_write          (reg_write)     );
+                                        .reg_write          (reg_write)         );
+
+    registers           reg0(           
+
+                                                                                );
 
     sign_extension      sign_exts(      .imm_val            (imm_val),
-                                        .extended_imm_val   ())
+                                        .extended_imm_val   ()                  );
+
+    MUX_2_to_1          mux0(           .sel                (alu_src),
+                                        .in0                (extended_imm_val),
+                                        .in1                (rt),
+                                        .out                (rt_imm_mux_result) );
+
+    ALU_ctrl_unit       alu_ctrl0(              
+        
+                                                                                );
+
+    ALU                 alu0();
 
     
 endmodule

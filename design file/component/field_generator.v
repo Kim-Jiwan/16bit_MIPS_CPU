@@ -17,9 +17,10 @@ module field_generator #(
     assign rs       =   instr[12:10];
     assign rt       =   instr[9:7];
     assign rd       =   instr[6:4];
+    assign funct    =   instr[3:0];
 
     assign imm_val  =   instr[6:0];
-    assign 
+    // assign 
 
 
 endmodule

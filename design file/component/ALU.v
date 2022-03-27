@@ -1,9 +1,11 @@
-module ALU (
-    input   wire    [2:0]   alu_ctrl,
-    input   wire    [15:0]  read_data_1,
-    input   wire    [15:0]  read_data_2,
+module ALU #(
+    parameter inst_SIZE = 16
+) (
+    input   wire    [2:0]               alu_ctrl,
+    input   wire    [inst_SIZE-1:0]     read_data_1,
+    input   wire    [inst_SIZE-1:0]     read_data_2,
 
-    output  wire            zero,
+    output  wire                        zero,
     output          
 );
     
