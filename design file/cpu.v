@@ -19,6 +19,7 @@ module cpu #(
     wire    [2:0]               rd; // destination register
     wire    [6:0]               imm_val;
     wire    [3:0]               funct; // function code
+    wire    [2:0]               reg_write_addr; // output of MUX3_to_1 before registers
 
     // control signal
     wire    [1:0]               reg_DST;
@@ -32,6 +33,7 @@ module cpu #(
     wire                        reg_write;
     wire                        sign_or_zero;
 
+    // excution port
     wire    [inst_SIZE-1:0]     extended_imm_val;
     wire    [inst_SIZE-1:0]     read_data_1;
     wire    [inst_SIZE-1:0]     read_data_2;
@@ -47,7 +49,10 @@ module cpu #(
     wire    [inst_SIZE-1:0]     PC_mux1_output;
     wire    [inst_SIZE-1:0]     PC_mux2_output;
 
+    // memory port
     wire    [inst_SIZE-1:0]     mem_read_data;
+    wire    [inst_SIZE-1:0]     mem_to_reg_output;
+    wire    [inst_SIZE-1:0]     reg_write_data;
 
     // fetch
     program_counter     PC0(            .clk                (clk),
@@ -86,6 +91,13 @@ module cpu #(
                                         .ALU_src            (ALU_src),
                                         .reg_write          (reg_write)                 );
 ////////////////////not done
+    MUX_3_to_1          mux3_1_0(       .sel                (reg_DST),
+                                        .in0                (rt),
+                                        .in1                (rd),
+                                        .in2                (3'b111),
+                                        
+                                        .out                (reg_write_addr)            );
+
     registers           reg0(           
 
                                                                                         );
@@ -121,13 +133,18 @@ module cpu #(
                                         
                                         .datamem_strm       (mem_read_data)             );
 
-    MUX_3_to_1          mux3_1(         .sel                (mem_to_reg),
+    MUX_3_to_1          mux3_1_1(       .sel                (mem_to_reg),
                                         .in0                (ALU_result),
                                         .in1                (mem_read_data),
                                         .in2                (PC_p2),
                                         
-                                        .out                ()                          );
+                                        .out                (mem_to_reg_output)         );
 
+    MUX_2_to_1          mux4(           .sel                (),
+                                        .in0                (1'b0),
+                                        .in1                (mem_to_reg_output),
+                                        
+                                        .out                (reg_write_data)            );
     // branch & PC decision
     and (zero, branch, zero_and_branch);
 
