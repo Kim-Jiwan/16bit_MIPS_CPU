@@ -16,44 +16,54 @@ module ALU #(
     wire    [inst_SIZE-1:0]     slt_output;
     wire    [inst_SIZE-1:0]     mul_output;
 
-    adder           u0(     .in0        (read_data_1),
-                            .in1        (read_data_2),
-                            .out        (add_output)        );
+    adder           adder0(             .in0        (in0),
+                                        .in1        (in1),
+                                        .out        (add_output)        );
 
-    substractor     u1(     .in0        (read_data_1),
-                            .in1        (read_data_2),
-                            .out        (sub_output)        );
+    substractor     substrator0(        .in0        (in0),
+                                        .in1        (in1),
+                                        .out        (sub_output)        );
+
+    multiplier      multiplier0(        .in0        (in0),
+                                        .in1        (in1),
+                                        .out        (mul_output)        );
+
+    always @(in0 or in1) begin
+        if ((in0 - in1) == 0)
+            zero = 1;
+        else
+            zero = 0;
+    end
+
+    assign and_output   =   in0 & in1;
+    assign or_output    =   in0 | in1;
     
-    always @(read_data_1 or read_data_2 or ALU_ctrl) begin
+    always @(in0 or in1 or ALU_ctrl) begin
         case(ALU_ctrl)
             // add operation
-            /*3'b000 : begin
-                ALU_result = read_data_1 + read_data_2;
-                
-                if (ALU_result == 0)
-                    assign zero = 1;
-                else
-                    assign zero = 0;
+            3'b000 : begin
+                ALU_output = add_output;
             end
             // sub operation
             3'b001 : begin
-                ALU_result = read_data_1 - read_data_2;
-                
-                if (ALU_result == 0)
-                    assign zero = 1;
-                else
-                    assign zero = 0;
+                ALU_output = sub_output;
             end
             // and operation
             3'b010 : begin
-                ALU_result = 
+                ALU_output = and_output;
             end
-            3'b011 : 
-            3'b100 : 
-            3'b111 :*/
+            // or operation
+            3'b011 : begin
+                ALU_output = or_output;
+            end
+            // slt operation
+            3'b100 : begin
+                ALU_output = slt_output; 
+            end
+            // mul operation
+            3'b100 : begin
+                ALU_output = mul_output;
+            end
         endcase
     end
-
-    
-    
 endmodule

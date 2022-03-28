@@ -1,4 +1,4 @@
-module adder  #(
+module substractor #(
     parameter dataSIZE = 16
 ) (
     input   wire    [dataSIZE-1:0]  in0,
@@ -7,6 +7,6 @@ module adder  #(
     output  wire    [dataSIZE-1:0]  out
 );
 
-    assign out = in0 + in1;
+    assign out = in0 - in1;
     
 endmodule
