@@ -1,4 +1,4 @@
-module cpu #(
+module mips_16bit #(
     parameter inst_SIZE =   16,
     parameter PC_SIZE   =   13
 ) (
