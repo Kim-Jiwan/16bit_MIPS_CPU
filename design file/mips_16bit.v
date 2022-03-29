@@ -105,7 +105,7 @@ module mips_16bit #(
 
     // excution & memory
     sign_extension      sign_exts(      .imm_val            (imm_val),
-                                        .extended_imm_val   (extended_imm_val)                  );
+                                        .extended_imm_val   (extended_imm_val)          );
 
     MUX_2_to_1          mux0(           .sel                (ALU_src),
                                         .in0                (extended_imm_val),
