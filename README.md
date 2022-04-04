@@ -20,3 +20,6 @@
     - sign_extension.v
 
 ## design target
+![datapath](https://user-images.githubusercontent.com/65444464/161568473-b0dadc79-b502-4286-9ebe-e58d373d6fd4.png)
+
+## design verification
