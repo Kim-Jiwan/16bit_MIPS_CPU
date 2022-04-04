@@ -1,9 +1,9 @@
 module ALU #(
     parameter inst_SIZE = 16
 ) (
-    input   wire    [2:0]               ALU_ctrl,
-    input   wire    [inst_SIZE-1:0]     in0,
-    input   wire    [inst_SIZE-1:0]     in1,
+    input   	    [2:0]               ALU_ctrl,
+    input   	    [inst_SIZE-1:0]     in0, // rd
+    input   	    [inst_SIZE-1:0]     in1, // rs
 
     output  reg                         zero,
     output  reg     [inst_SIZE-1:0]     ALU_output
@@ -16,54 +16,66 @@ module ALU #(
     wire    [inst_SIZE-1:0]     slt_output;
     wire    [inst_SIZE-1:0]     mul_output;
 
-    adder           adder0(             .in0        (in0),
-                                        .in1        (in1),
-                                        .out        (add_output)        );
-
-    substractor     substrator0(        .in0        (in0),
-                                        .in1        (in1),
-                                        .out        (sub_output)        );
-
-    multiplier      multiplier0(        .in0        (in0),
-                                        .in1        (in1),
-                                        .out        (mul_output)        );
-
-    always @(in0 or in1) begin
-        if ((in0 - in1) == 0)
-            zero = 1;
-        else
-            zero = 0;
-    end
-
-    assign and_output   =   in0 & in1;
-    assign or_output    =   in0 | in1;
-    
+    assign  add_output  =   in0 + in1;
+    assign  sub_output  =   in0 - in1;
+    assign  and_output  =   in0 & in1;
+    assign  or_output   =   in0 | in1;
+    //assign  slt_output  =   in0 << in1;
+    assign  slt_output  =   in0 < in1 ? 1 : 0;
+    assign  mul_output  =   in0 * in1;
+	/*
     always @(in0 or in1 or ALU_ctrl) begin
+		if (ALU_ctrl == 3'b001)
+			if (sub_output == 0)
+				zero = 1;
+			else
+				zero = 0;
+				
+		else
+			zero = 0;
+    end
+    */
+    always @(in0 or in1 or ALU_ctrl) begin // latch!!
         case(ALU_ctrl)
             // add operation
             3'b000 : begin
-                ALU_output = add_output;
-            end
+				ALU_output = add_output;
+				zero = 0;
+			end
             // sub operation
-            3'b001 : begin
-                ALU_output = sub_output;
-            end
+            3'b001 : begin 
+				ALU_output = sub_output;
+				
+				if (sub_output == 16'b0)
+					zero = 1;
+				else
+					zero = 0;
+			end
             // and operation
             3'b010 : begin
-                ALU_output = and_output;
-            end
+				ALU_output = and_output;
+				zero = 0;
+			end
             // or operation
             3'b011 : begin
-                ALU_output = or_output;
-            end
-            // slt operation
+				ALU_output = or_output;
+				zero = 0;
+			end
+			// slt operation
+            // set on less than
             3'b100 : begin
-                ALU_output = slt_output; 
-            end
+				ALU_output = slt_output;
+				zero = 0;
+			end
             // mul operation
-            3'b100 : begin
-                ALU_output = mul_output;
-            end
+            3'b101 : begin
+				ALU_output = mul_output;
+				zero = 0;
+			end
+			default : begin
+				ALU_output = 0;
+				zero = 0;
+			end
         endcase
     end
 endmodule

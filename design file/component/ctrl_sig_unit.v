@@ -1,6 +1,5 @@
 module ctrl_sig_unit (
-    input   wire    [2:0]   opcode,
-    input   wire            rst,
+    input   	    [2:0]   opcode,
 
     output  reg     [1:0]   reg_DST,
     output  reg             jump,
@@ -13,20 +12,8 @@ module ctrl_sig_unit (
     output  reg             reg_write
 );
 
-    always @(*) begin
-        if (~rst) begin
-            reg_DST     <= 2'b00;
-            jump        <= 1'b0;
-            branch      <= 1'b0;
-            mem_read    <= 1'b0;
-            mem_to_reg  <= 2'b00;
-            ALU_op      <= 2'b00;
-            mem_write   <= 1'b0;
-            ALU_src     <= 1'b0;
-            reg_write   <= 1'b0;
-        end
-        else begin
-            case(opcode)
+	always @(opcode) begin
+		case(opcode)
                 3'b000 : begin // R format
                     reg_DST     <= 2'b01;
                     jump        <= 1'b0;
@@ -115,7 +102,17 @@ module ctrl_sig_unit (
                     ALU_src     <= 1'bx;
                     reg_write   <= 1'b1;
                 end
-            endcase
-        end
-    end
+				default : begin
+					reg_DST     <= 2'b00;
+					jump        <= 1'b0;
+					branch      <= 1'b0;
+					mem_read    <= 1'b0;
+					mem_to_reg  <= 2'b00;
+					ALU_op      <= 2'b00;
+					mem_write   <= 1'b0;
+					ALU_src     <= 1'b0;
+					reg_write   <= 1'b0;
+				end
+		endcase
+	end
 endmodule
